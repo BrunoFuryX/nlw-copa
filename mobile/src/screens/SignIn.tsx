@@ -8,7 +8,7 @@ import { useAuth } from '../hooks/UseAuth';
 
 export function SignIn() {
 
-  const { signIn, user } = useAuth();
+  const { signIn, isUserLoading } = useAuth();
 
   return (
     <Center flex={1} bgColor="gray.900" p={7} >
@@ -19,6 +19,7 @@ export function SignIn() {
         mt={12}
         title="Entrar com o google"
         type="SECUNDARY"
+        isLoading={isUserLoading}
         leftIcon={
           <Icon as={Fontisto}
             name="google"

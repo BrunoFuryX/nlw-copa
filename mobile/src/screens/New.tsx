@@ -11,7 +11,7 @@ export function New() {
       flex={1}
       bgColor={"gray.900"}
     >
-      <Header title="Criar novo bolão" />
+      <Header title="Criar novo bolão" showExitButton />
 
       <VStack mt={8} mx={5} alignItems="center">
         <Logo />

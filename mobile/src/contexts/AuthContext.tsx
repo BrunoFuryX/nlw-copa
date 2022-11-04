@@ -3,6 +3,8 @@ import * as Google from 'expo-auth-session/providers/google'
 import * as AuthSession from 'expo-auth-session'
 import * as WebBrowser from 'expo-web-browser'
 
+import { api } from "../services/api";
+
 WebBrowser.maybeCompleteAuthSession()
 
 interface UserProps {
@@ -14,6 +16,7 @@ export interface AuthContextDataProps {
   user: UserProps;
   isUserLoading: boolean;
   signIn: () => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 interface AuthProviderProps {
@@ -33,6 +36,17 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
     scopes: ['profile', 'email']
   });
 
+  async function signOut() {
+    try {
+      setUser({} as UserProps)
+      api.defaults.headers.common['Authorization'] = ''
+    } catch (err) {
+      console.error(err);
+      throw err;
+
+    };
+  }
+
   async function signIn() {
     try {
       setIsUserLoading(true)
@@ -48,8 +62,23 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
     };
   }
 
-  async function signInWithGoogle(accessToken: string) {
-    console.log("Token", accessToken)
+  async function signInWithGoogle(access_token: string) {
+    setIsUserLoading(true)
+    try {
+      const TokenResponse = await api.post('/users', { access_token: access_token })
+      api.defaults.headers.common['Authorization'] = 'Bearer ' + TokenResponse.data.token
+
+      const userInfoResponse = await api.get('/me')
+      setUser(userInfoResponse.data.user)
+
+      console.log(user)
+
+    } catch (err) {
+      console.error(err);
+      throw err;
+    } finally {
+      setIsUserLoading(false)
+    }
   }
 
   useEffect(() => {
@@ -61,6 +90,7 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
   return (
     <AuthContext.Provider value={{
       signIn,
+      signOut,
       isUserLoading,
       user
     }}
