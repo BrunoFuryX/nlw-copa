@@ -5,6 +5,8 @@ import * as WebBrowser from 'expo-web-browser'
 
 import { api } from "../services/api";
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 WebBrowser.maybeCompleteAuthSession()
 
 interface UserProps {
@@ -17,6 +19,7 @@ export interface AuthContextDataProps {
   isUserLoading: boolean;
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
+  setUser: ({ }: UserProps) => void; // add
 }
 
 interface AuthProviderProps {
@@ -31,7 +34,7 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
   const [isUserLoading, setIsUserLoading] = useState(false);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: '937538432478-182o6rh4to660cdlev6pisna5lq4ic1o.apps.googleusercontent.com',
+    clientId: process.env.CLIENT_ID,
     redirectUri: AuthSession.makeRedirectUri({ useProxy: true }),
     scopes: ['profile', 'email']
   });
@@ -40,6 +43,12 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
     try {
       setUser({} as UserProps)
       api.defaults.headers.common['Authorization'] = ''
+      try {
+        await AsyncStorage.removeItem("@storage_Key:token");
+        await AsyncStorage.removeItem("@storage_Key:user");
+      } finally {
+        // Faz o que quiser
+      }
     } catch (err) {
       console.error(err);
       throw err;
@@ -65,13 +74,22 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
   async function signInWithGoogle(access_token: string) {
     setIsUserLoading(true)
     try {
+      console.log(access_token)
+
       const TokenResponse = await api.post('/users', { access_token: access_token })
       api.defaults.headers.common['Authorization'] = 'Bearer ' + TokenResponse.data.token
 
       const userInfoResponse = await api.get('/me')
-      setUser(userInfoResponse.data.user)
 
-      console.log(user)
+      const jsonValue = JSON.stringify(userInfoResponse.data.user);
+
+      console.log(TokenResponse.data.token)
+      console.log(jsonValue)
+
+      await AsyncStorage.setItem("@storage_Keya:token", TokenResponse.data.token);
+      await AsyncStorage.setItem("@storage_Key:user", jsonValue);
+
+      setUser(userInfoResponse.data.user)
 
     } catch (err) {
       console.error(err);
@@ -92,7 +110,8 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
       signIn,
       signOut,
       isUserLoading,
-      user
+      user,
+      setUser
     }}
     >
       {children}

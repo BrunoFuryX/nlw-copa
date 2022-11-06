@@ -28,37 +28,72 @@ async function main() {
     }
   })
 
+  // Jogo de Abertura
   await prisma.game.create({
     data: {
-      date: '2022-11-01T12:00:00.365Z',
-      firstTeamCountryCode: 'DE',
-      secondTeamCountryCode: 'BR',
+      date: '2022-11-20T16:00:00.365Z',
+      firstTeamCountryCode: 'QA',
+      secondTeamCountryCode: 'EQ',
+      firstTeamCountryPoints: '0',
+      secondTeamCountryPoints: '0',
     }
   })
 
+  // Jogo de 21/11
   await prisma.game.create({
     data: {
-      date: '2022-11-06T12:00:00.365Z',
-      firstTeamCountryCode: 'BR',
-      secondTeamCountryCode: 'AR',
-
-      guesses: {
-        create: {
-          firstTeamPoints: 2,
-          secondTeamPoints: 0,
-
-          participant: {
-            connect: {
-              userId_poolId: {
-                userId: user.id,
-                poolId: pool.id
-              }
-            }
-          }
-        }
-      }
+      date: '2022-11-21T13:00:00.365Z',
+      firstTeamCountryCode: 'EN',
+      secondTeamCountryCode: 'IR',
+      firstTeamCountryPoints: '0',
+      secondTeamCountryPoints: '0',
     }
   })
+  await prisma.game.create({
+    data: {
+      date: '2022-11-21T13:00:00.365Z',
+      firstTeamCountryCode: 'SN',
+      secondTeamCountryCode: 'NL',
+      firstTeamCountryPoints: '0',
+      secondTeamCountryPoints: '0',
+    }
+  })
+  await prisma.game.create({
+    data: {
+      date: '2022-11-21T13:00:00.365Z',
+      firstTeamCountryCode: 'US',
+      secondTeamCountryCode: 'WA',
+      firstTeamCountryPoints: '0',
+      secondTeamCountryPoints: '0',
+    }
+  })
+  // Jogo de 22/11
+
+
+  // Jogo de 23/11
+
+
+  // Jogo de 24/11
+
+
+  // Jogo de 25/11
+
+  // Jogo de 26/11
+
+  // Jogo de 27/11
+
+  // Jogo de 28/11
+
+  // Jogo de 29/11
+
+  // Jogo de 30/11
+
+  // Jogo de 01/12
+
+  // Jogo de 02/12
+
+
+
 }
 
 main()

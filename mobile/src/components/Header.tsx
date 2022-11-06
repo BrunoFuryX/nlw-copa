@@ -11,9 +11,10 @@ interface Props {
   showBackButton?: boolean;
   showExitButton?: boolean;
   showShareButton?: boolean;
+  onShare: () => void;
 }
 
-export function Header({ title, showExitButton = false, showBackButton = false, showShareButton = false }: Props) {
+export function Header({ title, showExitButton = false, showBackButton = false, showShareButton = false, onShare = () => { } }: Props) {
   const { navigate } = useNavigation()
   const { signOut } = useAuth();
 
@@ -39,7 +40,7 @@ export function Header({ title, showExitButton = false, showBackButton = false, 
         {
           showShareButton
             ?
-            <ButtonIcon icon={Export} />
+            <ButtonIcon icon={Export} onPress={onShare} />
             :
             <EmptyBoxSpace />
         }

@@ -24,6 +24,10 @@ async function bootstrap() {
         secret: config.JWT_SECRET,
     });
 
+    fastify.get('/', function (req, res) {
+        res.send('Hello World!');
+    })
+
     fastify.register(poolRoutes)
     fastify.register(userRoutes)
     fastify.register(authRoutes)

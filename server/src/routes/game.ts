@@ -41,4 +41,78 @@ export async function gameRoutes(fastify: FastifyInstance) {
       })
     })
   })
+  fastify.post('/games', async (req, res) => {
+    const GameBody = z.object({
+      date: z.string(),
+      firstTeamCountryCode: z.string(),
+      secondTeamCountryCode: z.string()
+    })
+
+    const { date, firstTeamCountryCode, secondTeamCountryCode } = GameBody.parse(req.body)
+
+    await prisma.game.create({
+      data: {
+        date,
+        firstTeamCountryCode,
+        secondTeamCountryCode
+      }
+    })
+
+    return res.status(201).send({
+      message: 'Jogo Criado com sucesso'
+    })
+  })
+
+  fastify.get('/games/:id',
+    async (req, res) => {
+      const getPoolParams = z.object({
+        id: z.string(),
+      })
+
+      const { id } = getPoolParams.parse(req.params)
+
+      const game = await prisma.game.findUnique({
+        where: {
+          id
+        }
+      })
+
+      return res.status(200).send({
+        game
+      })
+    })
+
+  fastify.post('/games/:id', async (req, res) => {
+    const getGameParams = z.object({
+      id: z.string(),
+    })
+    const GameBody = z.object({
+      date: z.string(),
+      firstTeamCountryCode: z.string(),
+      secondTeamCountryCode: z.string(),
+
+      firstTeamCountryPoints: z.string(),
+      secondTeamCountryPoints: z.string(),
+    })
+
+    const { id } = getGameParams.parse(req.params)
+    const { date, firstTeamCountryCode, secondTeamCountryCode, firstTeamCountryPoints, secondTeamCountryPoints } = GameBody.parse(req.body)
+
+    await prisma.game.update({
+      where: {
+        id
+      },
+      data: {
+        date,
+        firstTeamCountryCode,
+        secondTeamCountryCode,
+        firstTeamCountryPoints,
+        secondTeamCountryPoints
+      }
+    })
+
+    return res.status(201).send({
+      message: 'Jogo Criado com sucesso'
+    })
+  })
 }

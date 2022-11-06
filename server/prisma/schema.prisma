@@ -47,10 +47,12 @@ model User {
 }
 
 model Game {
-  id                    String   @id @default(cuid())
-  date                  DateTime
-  firstTeamCountryCode  String
-  secondTeamCountryCode String
+  id                      String   @id @default(cuid())
+  date                    DateTime
+  firstTeamCountryCode    String
+  secondTeamCountryCode   String
+  firstTeamCountryPoints  String? //Additional team country points
+  secondTeamCountryPoints String? //Additional team country points
 
   guesses Guess[]
 }
